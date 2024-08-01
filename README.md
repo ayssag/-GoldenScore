@@ -34,3 +34,8 @@ Em uma busca por redenção, ele visitou o Oráculo de Delfos que lhe informou q
     node jogo.js
 `
 
+## Apresentação
+Link no Google Drive para apresentação -> [video*](https://drive.google.com/file/d/1_CAnO3ydCQhlg6UowDevwLSl8zWwzt8n/view?usp=sharing)
+
+*Não foi possível fazer upload no Youtube devido ao tamanho do arquivo.
+
