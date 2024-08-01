@@ -6,23 +6,27 @@
 
 const Vilao = require('../personagens/vilao');
 
-var msg = `
-            ,%%%%%%%%%%                                \\\\ /////
-          ,%%/\\%%%%/\\%%                                |      |
-         ,%%%\\  ""  /%%%                              (| _  _ |)
- %.       %%%%/ o  o \\%%%                              |  |   |
-  %%.     %%%%    _  |%%%                              |  __  |
-   %%      %%%%(__Y__)%%                         >>>___/\\_^__/\\___<<<
-  //       ;%%%% \\-/%%%                         /               |||  \\
- ((       /   %%%%%%%                          
-  \\\\    .           |
-    \\\\/         ) | |             (1) Espada  (2) Arco e Flecha  (3) Estilingue
-     \\         /_ | |__
-     (___________)))))))
-`
+function displayCombate(displayHeroi, displayVilao){
+    var msg = `
+          ,%%%%%%%%%%                                \\\\ /////
+        ,%%/\\%%%%/\\%%                                |      |
+        ,%%%\\  ""  /%%%                             (| _  _ |)
+%.      %%%%/ o  o \\%%%                              |  |   |
+%%.     %%%%    _  |%%%                              |  __  |
+%%       %%%%(__Y__)%%                         >>>___/\\_^__/\\___<<<
+//       ;%%%% \\-/%%%                          /               |||  \\
+((       /   %%%%%%%                          
+\\\\    .           | 
+    \\\\/         ) | |          (1) Espada  (2) Arco e Flecha  (3) Estilingue (4) Fugir
+    \\         /_ | |__
+    (___________)))))))                                   
 
+        |${displayVilao}|                                 |${displayHeroi}|
+    `
+    return msg;
+}
 function ataqueLeao(){
-    let ataque = Math.floor(Math.random() * 11);
+    let ataque = Math.floor(Math.random() * 1001);
 
     if(ataque % 2 == 0){
         return 'mordida';
@@ -32,17 +36,17 @@ function ataqueLeao(){
 }
 
 function ataqueHeroi(arma, itens){
+    let dano = 0;
     if(itens.includes(arma)){
         if(arma == 'espada'){
-            return 30;
+            dano = 30;
         }else if(arma == 'estilingue'){
-            return 15;
+            dano = 15;
         }else if(arma == 'arcoeflecha'){
-            return 50;
+            dano = 50;
         }
-    }else{
-        return 0;
     }
+    return dano;
 }
 
 function combate(heroi, input){
@@ -51,24 +55,31 @@ function combate(heroi, input){
     let finalCombate = false;
     let arma;
     let resultado = false;
+    displayVilao = '';
+    displayHeroi = '';
     
     while(!finalCombate){
         console.clear();
-        console.log(msg);
+        console.log(displayCombate(displayHeroi, displayVilao));
 
         heroi.status();
         leao.status();
         // Ataque do herói
         do{
             arma = +input('Escolha a arma do golpe ::::>>> ');
-        }while(arma != 1 && arma != 2 && arma != 3);
+        }while(arma != 1 && arma != 2 && arma != 3 && arma != 4);
 
         if(arma == 1){
+            displayHeroi = 'Espada!!!! -30 XP';
             dano = ataqueHeroi('espada', heroi.itens);
         }else if(arma == 2){
+            displayHeroi = 'Arco e Flecha!!!! -50 XP';
             dano = ataqueHeroi('arcoeflecha', heroi.itens);
         }else if(arma == 3){
+            displayHeroi = 'Estilingue!!!! -15 XP';
             dano = ataqueHeroi('estilingue', heroi.itens);
+        }else if(arma == 4){
+            finalCombate = true;
         }
 
         if(leao.vida - dano <= 0){
@@ -77,23 +88,28 @@ function combate(heroi, input){
         }else{
             leao.vida -= dano;
         }
+
         // Ataque do vilão
-        golpeLeao = ataqueLeao();
-        if(golpeLeao == 'mordida'){
-            dano = 30;
-            if(heroi.vida - dano <= 0){
-                heroi.vida = 0;
-                finalCombate = true;
-            }else{
-                heroi.vida -= dano;
-            }
-        }else if(golpeLeao == 'rosnado'){
-            dano = 15;
-            if(heroi.vida - dano <= 0){
-                heroi.vida = 0;
-                finalCombate = true;
-            }else{
-                heroi.vida -= dano;
+        if(!finalCombate){
+            golpeLeao = ataqueLeao();
+            if(golpeLeao == 'mordida'){
+                displayVilao = 'Mordida! -30 XP'; 
+                dano = 30;
+                if(heroi.vida - dano <= 0){
+                    heroi.vida = 0;
+                    finalCombate = true;
+                }else{
+                    heroi.vida -= dano;
+                }
+            }else if(golpeLeao == 'rosnado'){
+                displayVilao = 'Rosnado! -15 XP';
+                dano = 15;
+                if(heroi.vida - dano <= 0){
+                    heroi.vida = 0;
+                    finalCombate = true;
+                }else{
+                    heroi.vida -= dano;
+                }
             }
         }
     }
